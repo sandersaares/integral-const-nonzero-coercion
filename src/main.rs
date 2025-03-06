@@ -73,14 +73,9 @@ mod with_nonzero_today {
 #[cfg(test)]
 mod with_macro {
     macro_rules! nonzero {
-        ($x:literal) => {{
-            // Compile-time check: if $x is 0, panic to cause a compilation error
-            const _: () = if $x == 0 {
-                ::std::panic!("zero is not a valid value for a NonZero type")
-            };
-            // SAFETY: We already validated it is not zero.
-            unsafe { ::std::num::NonZero::new_unchecked($x) }
-        }};
+        ($x:literal) => {
+            const { ::std::num::NonZero::new($x).expect("literal must have non-zero value") }
+        };
     }
 
     use std::num::NonZero;
